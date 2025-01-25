@@ -1,27 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
-import './testFireStore'; // Import the test file
+// /App.js
+import React, { useState, useEffect } from "react";
+import { auth } from "./components/firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import SignUpForm from "./components/Auth/signUpForm";
+import SignInForm from "./components/Auth/signInForm";
+import SignOutButton from "./components/Auth/SignOutButton";
 
+const App = () => {
+  const [user, setUser] = useState(null);
 
-function App() {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return unsubscribe;
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {user ? (
+        <div>
+          <h1>Welcome, {user.email}</h1>
+          <SignOutButton />
+        </div>
+      ) : (
+        <div>
+          <h1>Authentication</h1>
+          <SignInForm />
+          <SignUpForm />
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;

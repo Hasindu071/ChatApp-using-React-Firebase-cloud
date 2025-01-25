@@ -1,5 +1,5 @@
 // testFirestore.js
-import { db } from "./firebase"; // Import the firebase instance
+import { db } from "./components/firebase/firebase"; // Import the firebase instance
 import { collection, addDoc } from "firebase/firestore";
 
 const testFirestoreConnection = async () => {
