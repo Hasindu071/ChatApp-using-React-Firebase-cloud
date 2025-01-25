@@ -28,7 +28,6 @@ const App = () => {
       ) : (
         <div>
         {/* if the user is not authenticated */}
-          <h1>Authentication</h1>
           <SignUpForm />
         </div>
       )}

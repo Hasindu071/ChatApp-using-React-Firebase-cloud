@@ -1,38 +1,61 @@
-/* /components/Auth/SignUpForm.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('../chat app back.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .form-container {
-    max-width: 400px;
-    margin: 50px auto;
+    flex-grow: 1; /* Allow the container to expand */
+    width: 100%; /* Ensure it takes the desired width */
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: #f9f9f9;
-  }
-  
-  form input {
-    width: 100%;
+    background-color: rgba(6, 54, 56, 0.6); /* Add transparency for a modern effect */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: left; /* Align the container's text to the left */
+}
+
+.lab {
+    color: #ffffff;
+    font-size: 15px;
+    text-align: left; /* Align labels to the left */
+}
+
+form {
+    display: flex;
+    flex-direction: column; /* Stack the elements vertically */
+}
+
+form input,
+form button {
+    align-self: center; /* Center the text boxes and button horizontally */
+    width: 90%; /* Maintain consistent width */
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-  }
-  
-  form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
+}
+
+form button {
+    background-color: #124e4e;
     color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-  }
-  
-  form button:hover {
+}
+
+form button:hover {
     background-color: #45a049;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #333;
-  }
-  
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center; /* Center the heading text */
+}

@@ -13,21 +13,32 @@ const SignUpForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Enter your email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Enter your password"
-      />
-      <button type="submit">Sign Up</button>
-    </form>
+    <div className="form-container">
+      <h2>Sign Up</h2>
+      <hr></hr>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="email" className="lab">Email:</label>
+        <input
+          id = "email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+        />
+        <label htmlFor="password" className="lab">Password</label>
+        <input
+          id = "password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter your password"
+        />
+        <button type="submit">Sign Up</button>
+
+        <p > Haven't sign up yet ? login here</p>
+
+      </form>
+    </div>
   );
 };
 
