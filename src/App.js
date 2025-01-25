@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { auth } from "./components/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import SignInForm from "./components/Auth/signInForm";
 import SignOutButton from "./components/Auth/SignOutButton";
-
+import SignUpForm from "./components/Auth/signUpForm";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -30,7 +29,7 @@ const App = () => {
         <div>
         {/* if the user is not authenticated */}
           <h1>Authentication</h1>
-          <SignInForm />
+          <SignUpForm />
         </div>
       )}
     </div>

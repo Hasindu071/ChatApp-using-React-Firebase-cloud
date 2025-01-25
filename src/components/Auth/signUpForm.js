@@ -1,6 +1,7 @@
 // /components/Auth/SignUpForm.js
 import React, { useState } from "react";
 import { signUp } from "../../functions/authFunctions";
+import "../../styles/signUpForm.css";
 
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
