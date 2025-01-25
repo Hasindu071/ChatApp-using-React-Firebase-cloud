@@ -1,5 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
+import './testFireStore'; // Import the test file
+
 
 function App() {
   return (
