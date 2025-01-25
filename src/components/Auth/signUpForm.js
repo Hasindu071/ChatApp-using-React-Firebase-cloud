@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { signUp } from "../../functions/authFunctions";
 import "../../styles/signUpForm.css";
 
-const SignUpForm = () => {
+const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,7 +19,7 @@ const SignUpForm = () => {
       <form onSubmit={handleSubmit}>
         <label htmlFor="email" className="lab">Email:</label>
         <input
-          id = "email"
+          id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -27,7 +27,7 @@ const SignUpForm = () => {
         />
         <label htmlFor="password" className="lab">Password</label>
         <input
-          id = "password"
+          id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -35,8 +35,16 @@ const SignUpForm = () => {
         />
         <button type="submit">Sign Up</button>
 
-        <p > Haven't sign up yet ? login here</p>
-
+        {/* Add the clickable "login here" text */}
+        <p>
+          Already have an account?{" "}
+          <span
+            style={{ color: "blue", cursor: "pointer" }}
+            onClick={toggleForm} // Call the `toggleForm` function on click
+          >
+            Login here
+          </span>
+        </p>
       </form>
     </div>
   );
