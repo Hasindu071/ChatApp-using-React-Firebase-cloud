@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import SignOutButton from "./components/Auth/SignOutButton";
 import SignUpForm from "./components/Auth/signUpForm";
 import SignInForm from "./components/Auth/signInForm";
+import ChatPage from "./components/ChatPage";
 
 const App = () => {
   const [user, setUser] = useState(null); // State for authenticated user
@@ -21,17 +22,17 @@ const App = () => {
     <div>
       {user ? (
         <div>
-          {/* If the user is authenticated */}
-          <h1>Welcome, {user.email}</h1>
+          {/* If the user is authenticated, show ChatPage */}
+          <ChatPage user={user} />
           <SignOutButton />
         </div>
       ) : (
         <div>
-          {/* If the user is not authenticated */}
+          {/* If the user is not authenticated, show SignUp or SignIn form */}
           {isSignUp ? (
-            <SignUpForm toggleForm={() => setIsSignUp(false)} /> // Pass toggle function to sign-up form
+            <SignUpForm toggleForm={() => setIsSignUp(false)} />
           ) : (
-            <SignInForm toggleForm={() => setIsSignUp(true)} /> // Pass toggle function to login form
+            <SignInForm toggleForm={() => setIsSignUp(true)} />
           )}
         </div>
       )}
