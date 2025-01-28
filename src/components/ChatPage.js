@@ -10,8 +10,8 @@ const ChatPage = ({ user }) => {
 
   useEffect(() => {
     // Real-time listener for Firestore messages
-    const q = query(messagesRef, orderBy("timestamp", "asc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const q = query(messagesRef, orderBy("timestamp", "asc")); // sort by aecending order
+    const unsubscribe = onSnapshot(q, (snapshot) => { //realtime listner for messages
       const fetchedMessages = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -22,6 +22,7 @@ const ChatPage = ({ user }) => {
     return () => unsubscribe(); // Cleanup listener on component unmount
   }, [messagesRef]);
 
+  //handle sending messages
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (message.trim()) {
