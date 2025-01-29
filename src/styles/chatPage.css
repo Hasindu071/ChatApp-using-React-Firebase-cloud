@@ -16,10 +16,7 @@
 .chat-header {
   background: linear-gradient(135deg, #064238, #037971);
   color: white;
-  padding: 18px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
+  padding: 0px;
 }
 
 /* Chat Body */
@@ -36,10 +33,11 @@
 
 /* Chat Messages */
 .message {
-  width: 8000000px;
+  width: 800px;
   max-width: 70%;
   padding: 12px;
   border-radius: 12px;
+  border : 1px solid rgba(6, 54, 56, 0.1);
   font-size: 1rem;
   position: relative;
   opacity: 0;
@@ -47,22 +45,24 @@
   animation: fadeIn 0.3s forwards;
 }
 
-/* Sent Messages */
-.sent {
+/* Messages sent by the logged-in user (aligned to right) */
+.message.sent {
+  background-color: rgba(103, 154, 137, 0.9);
+  color: black;
   align-self: flex-end;
-  background: linear-gradient(135deg, #037971, #064238);
-  color: white;
   text-align: right;
-  border-bottom-right-radius: 2px;
+  margin-left: auto;
+  border-radius: 10px 10px 0 10px;
 }
 
-/* Received Messages */
-.received {
+/* Messages received from others (aligned to left) */
+.message.received {
+  background-color: #f1f1f1;
+  color: black;
   align-self: flex-start;
-  background: rgba(6, 54, 56, 0.1);
-  color: #064238;
   text-align: left;
-  border-bottom-left-radius: 2px;
+  margin-right: auto;
+  border-radius: 10px 10px 10px 0;
 }
 
 /* Chat Footer */

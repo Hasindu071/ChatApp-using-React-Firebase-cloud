@@ -67,17 +67,23 @@ button:hover {
   box-shadow: 0 2px 8px rgba(6, 54, 56, 0.1);
 }
 
+.time-style{
+  font-size: xx-small;
+}
+
 /* Titles */
 h1 {
   color: #1c4226;
   margin-bottom: 15px;
+  margin-left: 10px;
 }
 
 /* Titles */
 h3 {
-  font-size: 1.4rem;
+  font-size: 1 rem;
   color: #c7e8cf;
   margin-bottom: 15px;
+  margin-left: 10px;
 }
 
 /* Responsive Design */

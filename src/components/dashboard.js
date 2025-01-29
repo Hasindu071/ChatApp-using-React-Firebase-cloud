@@ -154,13 +154,26 @@ const Dashboard = () => {
               <h3>Chat with {selectedUser ? selectedUser.displayName : selectedGroup.name}</h3>
             </div>
             <div className="chat-body">
-              {messages.map((message) => (
-                <div key={message.id} className="message">
-                  <p><strong>{message.senderName}</strong> <span>{new Date(message.timestamp.seconds * 1000).toLocaleString()}</span></p>
-                  <p>{message.text}</p>
-                </div>
-              ))}
-            </div>
+                {messages.map((message) => {
+                  let messageClass = "message received"; // Default class (received messages)
+
+                  // Check if the message was sent by the logged-in user
+                  if (message.senderId === auth.currentUser.uid) {
+                    messageClass = "message sent"; // Apply 'sent' class for user's own messages
+                  }
+
+                  return (
+                    <div key={message.id} className={messageClass}>
+                      <p style={{ fontSize: "11px" , color:"rgba(6, 54, 56)"}}><strong>{message.senderName}</strong></p>
+                      <p>{message.text}</p>
+                      <p className="time-style">
+                        <span>{new Date(message.timestamp.seconds * 1000).toLocaleString()}</span>
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
             <div className="chat-footer">
               <input
                 type="text"
