@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { db, auth } from "./firebase";
 import { collection, addDoc, onSnapshot, serverTimestamp, orderBy, query } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import "../styles/chatPage.css"; // Ensure you create this CSS file for styling
 
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
+  const messagesEndRef = useRef(null); // For auto-scrolling
 
   useEffect(() => {
     if (!auth.currentUser) {
-      navigate("/signin"); // Redirect to login if not authenticated
+      navigate("/signin");
       return;
     }
 
-    const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
+    const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setMessages(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      scrollToBottom();
     });
 
     return () => unsubscribe();
@@ -33,19 +36,32 @@ const Chat = () => {
     });
 
     setMessage("");
+    scrollToBottom();
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <div>
+    <div className="chat-container">
       <h2>Chat Room</h2>
-      <div>
+      <div className="chat-box">
         {messages.map((msg) => (
-          <p key={msg.id}><strong>{msg.user}: </strong>{msg.text}</p>
+          <div key={msg.id} className={msg.user === auth.currentUser.email ? "message sent" : "message received"}>
+            <p><strong>{msg.user}: </strong>{msg.text}</p>
+          </div>
         ))}
+        <div ref={messagesEndRef}></div>
       </div>
-      <form onSubmit={sendMessage}>
-        <input value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Type a message..." />
-        <button type="submit">Send</button>
+      <form onSubmit={sendMessage} className="chat-form">
+        <input 
+          value={message} 
+          onChange={(e) => setMessage(e.target.value)} 
+          placeholder="Type a message..." 
+          className="chat-input"
+        />
+        <button type="submit" className="send-btn">Send</button>
       </form>
     </div>
   );
