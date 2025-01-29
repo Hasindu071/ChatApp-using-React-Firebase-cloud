@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { db } from "./firebase";  // Import Firebase config from firebase.js
 import { collection, onSnapshot } from "firebase/firestore";
 
+// Get all the users in the dtastore into the chat
 const UsersList = ({ onSelectUser }) => {
   const [users, setUsers] = useState([]);
 

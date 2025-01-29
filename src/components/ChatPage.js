@@ -42,7 +42,6 @@ const Chat = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
   return (
     <div className="chat-container">
       <h2>Chat Room</h2>

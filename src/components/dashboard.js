@@ -5,13 +5,15 @@ import { collection, addDoc, query, orderBy, onSnapshot } from "firebase/firesto
 import "../styles/dashboard.css";
 
 const Dashboard = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [groupName, setGroupName] = useState("");
-  const [groups, setGroups] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);//current user
+  const [selectedGroup, setSelectedGroup] = useState(null); // currently selected group
+  const [messages, setMessages] = useState([]); // store messages
+  const [newMessage, setNewMessage] = useState(""); // text of the message being typed
+  const [groupName, setGroupName] = useState(""); //group name
+  const [groups, setGroups] = useState([]); // all available groups
 
+
+  // fetching the groups from the firebase
   useEffect(() => {
     const groupsRef = collection(db, "groups");
     const q = query(groupsRef, orderBy("name"));
@@ -22,18 +24,23 @@ const Dashboard = () => {
     });
   }, []);
 
+
+  //delecting a user
   const handleSelectUser = (user) => {
     setSelectedUser(user);
     setSelectedGroup(null);
     fetchMessages(user.uid);  // Fetch chat messages when user is selected
   };
 
+
+  // selecting a group
   const handleSelectGroup = (group) => {
     setSelectedGroup(group);
     setSelectedUser(null);
     fetchGroupMessages(group.id);  // Fetch group messages when group is selected
   };
 
+  //fetching one-on one messages
   const fetchMessages = (receiverId) => {
     const messagesRef = collection(db, "messages");
     const q = query(messagesRef, orderBy("timestamp"));
@@ -46,6 +53,7 @@ const Dashboard = () => {
     });
   };
 
+  //Fetching group messages
   const fetchGroupMessages = (groupId) => {
     const messagesRef = collection(db, "groups", groupId, "messages");
     const q = query(messagesRef, orderBy("timestamp"));
@@ -56,6 +64,7 @@ const Dashboard = () => {
     });
   };
 
+  //sending messages to the users
   const sendMessage = async () => {
     if (!newMessage.trim() || (!selectedUser && !selectedGroup)) return;
 
@@ -68,6 +77,8 @@ const Dashboard = () => {
           receiverId: selectedUser.uid,
           timestamp: new Date()
         });
+
+  //Sending messages to the groups
       } else if (selectedGroup) {
         await addDoc(collection(db, "groups", selectedGroup.id, "messages"), {
           text: newMessage,
@@ -83,6 +94,7 @@ const Dashboard = () => {
     }
   };
 
+  //create a new group
   const createGroup = async (e) => {
     e.preventDefault();
     if (!groupName.trim()) return;
@@ -100,6 +112,8 @@ const Dashboard = () => {
     }
   };
 
+
+  //return web page
   return (
     <div className="dashboard">
       <div className="left-panel">
