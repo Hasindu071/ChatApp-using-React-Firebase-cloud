@@ -12,7 +12,7 @@ const Signin = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/chat"); // Redirect to chat page
+      navigate("/dashboard");
     } catch (error) {
       alert("Invalid login credentials");
     }
