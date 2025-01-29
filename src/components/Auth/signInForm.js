@@ -3,13 +3,16 @@ import React, { useState } from "react";
 import { signIn } from "../../functions/authFunctions";
 import "../../styles/signUpForm.css";
 
-const SignInForm = ({ toggleForm }) => { // Accept `toggleForm` prop
+const SignInForm = ({ toggleForm, setIsAuthenticated }) => { // Accept `toggleForm` and `setIsAuthenticated` props
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    signIn(email, password);
+    const success = await signIn(email, password);
+    if (success) {
+      setIsAuthenticated(true); // Set isAuthenticated to true after successful login
+    }
   };
 
   return (

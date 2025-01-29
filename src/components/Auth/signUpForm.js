@@ -6,10 +6,18 @@ import "../../styles/signUpForm.css";
 const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  //const [ setError] = useState(null); // Define error state
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    signUp(email, password);
+    //setError(null); // Clear previous errors
+    const success = await signUp(email, password);
+    
+    if (success) {
+      toggleForm(); // Switch to sign-in form only on success
+    } else {
+      console.error("Sign-up failed. Try again.");
+    }
   };
 
   return (
