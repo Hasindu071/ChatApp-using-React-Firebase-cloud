@@ -18,7 +18,7 @@ const UsersList = ({ onSelectUser }) => {
 
   return (
     <div>
-      <h3>Users</h3>
+      <h1>Users</h1>
       {users.map((user) => (
         <button key={user.uid} onClick={() => onSelectUser(user)}>
           {user.displayName}

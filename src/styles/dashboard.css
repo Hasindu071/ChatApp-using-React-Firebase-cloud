@@ -59,6 +59,7 @@ button:hover {
 
 /* Chat Box */
 .chat {
+  width: 100%;
   border: 1px solid rgba(6, 54, 56, 0.2);
   padding: 20px;
   border-radius: 8px;
@@ -67,9 +68,15 @@ button:hover {
 }
 
 /* Titles */
+h1 {
+  color: #1c4226;
+  margin-bottom: 15px;
+}
+
+/* Titles */
 h3 {
   font-size: 1.4rem;
-  color: #ffffff;
+  color: #c7e8cf;
   margin-bottom: 15px;
 }
 
