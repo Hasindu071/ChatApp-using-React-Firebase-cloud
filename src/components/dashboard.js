@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import UsersList from "./UserList";
 import { db, auth } from "./firebase"; // Correct import path
-import { collection, addDoc, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot ,where } from "firebase/firestore";
 import "../styles/dashboard.css";
 
 const Dashboard = () => {
-  const [selectedUser, setSelectedUser] = useState(null);//current user
+  const [selectedUser, setSelectedUser] = useState(null);//selected user
   const [selectedGroup, setSelectedGroup] = useState(null); // currently selected group
   const [messages, setMessages] = useState([]); // store messages
   const [newMessage, setNewMessage] = useState(""); // text of the message being typed
@@ -25,7 +25,6 @@ const Dashboard = () => {
   }, []);
 
 
-  //delecting a user
   const handleSelectUser = (user) => {
     setSelectedUser(user);
     setSelectedGroup(null);
@@ -42,16 +41,26 @@ const Dashboard = () => {
 
   //fetching one-on one messages
   const fetchMessages = (receiverId) => {
-    const messagesRef = collection(db, "messages");
-    const q = query(messagesRef, orderBy("timestamp"));
 
-    onSnapshot(q, (snapshot) => {
-      const fetchedMessages = snapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter(msg => (msg.senderId === receiverId || msg.receiverId === receiverId));
-      setMessages(fetchedMessages);
-    });
-  };
+    //get current users ID
+    const currentUserId = auth.currentUser.uid;
+
+    //get messages from the firestore
+    const messagesRef = collection(db, "messages");
+
+    // Query to get messages where logged-in user is either sender or receiver
+  const q = query(
+    messagesRef,
+    where("senderId", "in", [currentUserId, receiverId]), 
+    where("receiverId", "in", [currentUserId, receiverId]), 
+    orderBy("timestamp")
+  );
+
+  onSnapshot(q, (snapshot) => {
+    const fetchedMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setMessages(fetchedMessages);
+  });
+};
 
   //Fetching group messages
   const fetchGroupMessages = (groupId) => {
