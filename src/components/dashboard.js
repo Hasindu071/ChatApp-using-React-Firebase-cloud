@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import UsersList from "./UserList";
 import { db, auth } from "./firebase"; // Correct import path
-import { collection, addDoc, query, orderBy, onSnapshot ,where } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, where } from "firebase/firestore";
 import "../styles/dashboard.css";
 
 const Dashboard = () => {
-  const [selectedUser, setSelectedUser] = useState(null);//selected user
+  const [selectedUser, setSelectedUser] = useState(null); // selected user
   const [selectedGroup, setSelectedGroup] = useState(null); // currently selected group
   const [messages, setMessages] = useState([]); // store messages
   const [newMessage, setNewMessage] = useState(""); // text of the message being typed
-  const [groupName, setGroupName] = useState(""); //group name
+  const [groupName, setGroupName] = useState(""); // group name
   const [groups, setGroups] = useState([]); // all available groups
-
+  const [groupMembers, setGroupMembers] = useState([]); // members of the selected group
 
   // fetching the groups from the firebase
   useEffect(() => {
@@ -24,45 +24,38 @@ const Dashboard = () => {
     });
   }, []);
 
-
   const handleSelectUser = (user) => {
     setSelectedUser(user);
     setSelectedGroup(null);
-    fetchMessages(user.uid);  // Fetch chat messages when user is selected
+    fetchMessages(user.uid); // Fetch chat messages when user is selected
   };
 
-
-  // selecting a group
   const handleSelectGroup = (group) => {
     setSelectedGroup(group);
     setSelectedUser(null);
-    fetchGroupMessages(group.id);  // Fetch group messages when group is selected
+    fetchGroupMessages(group.id); // Fetch group messages when group is selected
+    fetchGroupMembers(group.id); // Fetch group members when group is selected
   };
 
-  //fetching one-on one messages
+  // fetching one-on-one messages
   const fetchMessages = (receiverId) => {
-
-    //get current users ID
     const currentUserId = auth.currentUser.uid;
-
-    //get messages from the firestore
     const messagesRef = collection(db, "messages");
 
-    // Query to get messages where logged-in user is either sender or receiver
-  const q = query(
-    messagesRef,
-    where("senderId", "in", [currentUserId, receiverId]), 
-    where("receiverId", "in", [currentUserId, receiverId]), 
-    orderBy("timestamp")
-  );
+    const q = query(
+      messagesRef,
+      where("senderId", "in", [currentUserId, receiverId]),
+      where("receiverId", "in", [currentUserId, receiverId]),
+      orderBy("timestamp")
+    );
 
-  onSnapshot(q, (snapshot) => {
-    const fetchedMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setMessages(fetchedMessages);
-  });
-};
+    onSnapshot(q, (snapshot) => {
+      const fetchedMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMessages(fetchedMessages);
+    });
+  };
 
-  //Fetching group messages
+  // fetching group messages
   const fetchGroupMessages = (groupId) => {
     const messagesRef = collection(db, "groups", groupId, "messages");
     const q = query(messagesRef, orderBy("timestamp"));
@@ -73,7 +66,16 @@ const Dashboard = () => {
     });
   };
 
-  //sending messages to the users
+  // fetching group members
+  const fetchGroupMembers = (groupId) => {
+    const membersRef = collection(db, "groups", groupId, "members");
+    onSnapshot(membersRef, (snapshot) => {
+      const fetchedMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setGroupMembers(fetchedMembers);
+    });
+  };
+
+  // sending messages to the users
   const sendMessage = async () => {
     if (!newMessage.trim() || (!selectedUser && !selectedGroup)) return;
 
@@ -81,29 +83,27 @@ const Dashboard = () => {
       if (selectedUser) {
         await addDoc(collection(db, "messages"), {
           text: newMessage,
-          senderId: auth.currentUser.uid,  // Replace with actual logged-in user ID
+          senderId: auth.currentUser.uid, // Replace with actual logged-in user ID
           senderName: auth.currentUser.displayName, // Assuming displayName is available
           receiverId: selectedUser.uid,
           timestamp: new Date()
         });
-
-  //Sending messages to the groups
       } else if (selectedGroup) {
         await addDoc(collection(db, "groups", selectedGroup.id, "messages"), {
           text: newMessage,
-          senderId: auth.currentUser.uid,  // Replace with actual logged-in user ID
+          senderId: auth.currentUser.uid, // Replace with actual logged-in user ID
           senderName: auth.currentUser.displayName, // Assuming displayName is available
           timestamp: new Date()
         });
       }
 
-      setNewMessage("");  // Clear input field after sending
+      setNewMessage(""); // Clear input field after sending
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
 
-  //create a new group
+  // create a new group
   const createGroup = async (e) => {
     e.preventDefault();
     if (!groupName.trim()) return;
@@ -115,14 +115,28 @@ const Dashboard = () => {
         createdAt: new Date()
       });
 
-      setGroupName("");  // Clear input field after creating group
+      setGroupName(""); // Clear input field after creating group
     } catch (error) {
       console.error("Error creating group:", error);
     }
   };
 
+  // add a new member to the group
+  const addGroupMember = async (user) => {
+    if (!selectedGroup) return;
 
-  //return web page
+    try {
+      await setDoc(doc(db, "groups", selectedGroup.id, "members", user.uid), {
+        userId: user.uid,
+        addedAt: new Date()
+      });
+
+      // Clear input field after adding member
+    } catch (error) {
+      console.error("Error adding group member:", error);
+    }
+  };
+
   return (
     <div className="dashboard">
       <div className="left-panel">
@@ -154,26 +168,25 @@ const Dashboard = () => {
               <h3>Chat with {selectedUser ? selectedUser.displayName : selectedGroup.name}</h3>
             </div>
             <div className="chat-body">
-                {messages.map((message) => {
-                  let messageClass = "message received"; // Default class (received messages)
+              {messages.map((message) => {
+                let messageClass = "message received"; // Default class (received messages)
 
-                  // Check if the message was sent by the logged-in user
-                  if (message.senderId === auth.currentUser.uid) {
-                    messageClass = "message sent"; // Apply 'sent' class for user's own messages
-                  }
+                // Check if the message was sent by the logged-in user
+                if (message.senderId === auth.currentUser.uid) {
+                  messageClass = "message sent"; // Apply 'sent' class for user's own messages
+                }
 
-                  return (
-                    <div key={message.id} className={messageClass}>
-                      <p style={{ fontSize: "11px" , color:"rgba(6, 54, 56)"}}><strong>{message.senderName}</strong></p>
-                      <p>{message.text}</p>
-                      <p className="time-style">
-                        <span>{new Date(message.timestamp.seconds * 1000).toLocaleString()}</span>
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-
+                return (
+                  <div key={message.id} className={messageClass}>
+                    <p style={{ fontSize: "11px", color: "rgba(6, 54, 56)" }}><strong>{message.senderName}</strong></p>
+                    <p>{message.text}</p>
+                    <p className="time-style">
+                      <span>{new Date(message.timestamp.seconds * 1000).toLocaleString()}</span>
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
             <div className="chat-footer">
               <input
                 type="text"
@@ -183,6 +196,17 @@ const Dashboard = () => {
               />
               <button onClick={sendMessage}>Send</button>
             </div>
+            {selectedGroup && (
+              <div className="group-members">
+                <h4>Add Members</h4>
+                <UsersList onSelectUser={addGroupMember} />
+                <ul className="group-members-list">
+                  {groupMembers.map(member => (
+                    <li key={member.id}>{member.userId}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         ) : (
           <h2>Select a user or group to start chatting</h2>

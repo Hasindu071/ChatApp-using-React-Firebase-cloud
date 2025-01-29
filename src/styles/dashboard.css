@@ -108,3 +108,10 @@ h3 {
       padding: 15px;
   }
 }
+.group-members-list {
+  font-size: 12px; /* Decrease font size */
+}
+
+.group-members h4 {
+  font-size: 14px; /* Decrease font size */
+}
