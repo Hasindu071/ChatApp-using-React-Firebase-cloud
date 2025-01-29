@@ -1,22 +1,22 @@
-// /components/Auth/SignUpForm.js
-import React, { useState } from "react";
-import { signUp } from "../../functions/authFunctions";
-import "../../styles/signUpForm.css";
+import { useState } from "react";
+import { auth } from "./firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import "../styles/signUpForm.css";
 
-const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const [ setError] = useState(null); // Define error state
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    //setError(null); // Clear previous errors
-    const success = await signUp(email, password);
-    
-    if (success) {
-      toggleForm(); // Switch to sign-in form only on success
-    } else {
-      console.error("Sign-up failed. Try again.");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Account created! Please log in.");
+      navigate("/signin"); // Redirect to login page
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -24,7 +24,7 @@ const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
     <div className="form-container">
       <h2>Sign Up</h2>
       <hr></hr>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSignup}>
         <label htmlFor="email" className="lab">Email:</label>
         <input
           id="email"
@@ -32,6 +32,7 @@ const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
+          required
         />
         <label htmlFor="password" className="lab">Password</label>
         <input
@@ -40,6 +41,7 @@ const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
+          required
         />
         <button type="submit">Sign Up</button>
 
@@ -48,7 +50,7 @@ const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
           Already have an account?{" "}
           <span
             style={{ color: "blue", cursor: "pointer" }}
-            onClick={toggleForm} // Call the `toggleForm` function on click
+            //onClick={toggleForm} // Call the `toggleForm` function on click
           >
             Login here
           </span>
@@ -58,4 +60,4 @@ const SignUpForm = ({ toggleForm }) => { // Accept `toggleForm` prop
   );
 };
 
-export default SignUpForm;
+export default Signup;

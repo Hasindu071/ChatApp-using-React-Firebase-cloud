@@ -1,5 +1,5 @@
 // /functions/authFunctions.js
-import { auth } from "../components/firebase/firebase";
+import { auth } from "../components/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 

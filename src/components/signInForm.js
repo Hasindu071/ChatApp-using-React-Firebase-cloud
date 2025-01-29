@@ -1,17 +1,20 @@
-// /components/Auth/SignInForm.js
-import React, { useState } from "react";
-import { signIn } from "../../functions/authFunctions";
-import "../../styles/signUpForm.css";
+import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase";
+import { useNavigate } from "react-router-dom";
 
-const SignInForm = ({ toggleForm, setIsAuthenticated }) => { // Accept `toggleForm` and `setIsAuthenticated` props
+const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const success = await signIn(email, password);
-    if (success) {
-      setIsAuthenticated(true); // Set isAuthenticated to true after successful login
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/chat"); // Redirect to chat page
+    } catch (error) {
+      alert("Invalid login credentials");
     }
   };
 
@@ -19,7 +22,7 @@ const SignInForm = ({ toggleForm, setIsAuthenticated }) => { // Accept `toggleFo
     <div className="form-container">
       <h2>Login</h2>
       <hr></hr>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <label htmlFor="email" className="lab">Email:</label>
         <input
           id="email"
@@ -43,7 +46,7 @@ const SignInForm = ({ toggleForm, setIsAuthenticated }) => { // Accept `toggleFo
           Don't have an account?{" "}
           <span
             style={{ color: "blue", cursor: "pointer" }}
-            onClick={toggleForm} // Call the `toggleForm` function on click
+            //onClick={toggleForm} // Call the `toggleForm` function on click
           >
             Sign up here
           </span>
@@ -53,4 +56,4 @@ const SignInForm = ({ toggleForm, setIsAuthenticated }) => { // Accept `toggleFo
   );
 };
 
-export default SignInForm;
+export default Signin;
