@@ -51,6 +51,41 @@ button {
   font-weight: bold;
 }
 
+   /* Style for the overall user list */
+.userlist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style each list item */
+.userlist-item {
+  padding: 10px 15px;
+  margin: 5px 0;
+  background-color: transparent;  /* No button-like background */
+  display: flex;
+  align-items: center;
+  cursor: pointer;               /* Pointer cursor to indicate it's clickable */
+  transition: background-color 0.2s ease; /* Smooth background transition */
+  font-size: 16px;                /* Adjust the font size */
+  border-bottom: 1px solid #e0e0e0;  /* Border line like WhatsApp */
+}
+
+/* Hover effect when user hovers over a list item */
+.userlist-item:hover {
+  background-color: #f1f1f1;    /* Subtle hover effect */
+}
+
+/* Style for the selected user item */
+.userlist-item.selected {
+  background-color: #144940;   /* Light blue background when selected */
+  color: #eceded;               /* Darker color for selected user */
+}
+
+
+
+
+
 button:hover {
   background: linear-gradient(135deg, #037971, #064238);
   transform: scale(1.05);
