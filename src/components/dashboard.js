@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import UsersList from "./UserList";
 import UsersDropdown from "./UserListDropDown";
 import { db, auth } from "./firebase"; // Correct import path
-import { collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, where } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, where, getDocs } from "firebase/firestore";
 import "../styles/dashboard.css";
+//import { getAuth } from "firebase/auth"; // Import Firebase Auth
+
 
 const Dashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // selected user
@@ -14,16 +16,63 @@ const Dashboard = () => {
   const [groups, setGroups] = useState([]); // all available groups
   const [groupMembers, setGroupMembers] = useState([]); // members of the selected group
 
-  // fetching the groups from the firebase
+ 
   useEffect(() => {
-    const groupsRef = collection(db, "groups");
-    const q = query(groupsRef, orderBy("name"));
-
-    onSnapshot(q, (snapshot) => {
-      const fetchedGroups = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setGroups(fetchedGroups);
-    });
+    const currentUser = auth.currentUser;
+  
+    if (currentUser) {
+      const currentUserId = currentUser.uid;
+      const groupsRef = collection(db, "groups");
+  
+      // Query all groups
+      const q = query(groupsRef);
+  
+      const unsubscribe = onSnapshot(q, async (snapshot) => {
+        const fetchedGroups = [];
+  
+        // For each group, check the members subcollection
+        for (const groupDoc of snapshot.docs) {
+          const groupId = groupDoc.id;
+  
+          // Reference to the members subcollection of this group
+          const membersRef = collection(db, "groups", groupId, "members");
+          
+          // Get the documents from the members subcollection
+          const memberSnapshot = await getDocs(membersRef);
+  
+          // Log to verify current user ID and member snapshot
+          console.log('Current User ID:', currentUserId);
+          console.log('Group ID:', groupId);
+          console.log('Member Snapshot:', memberSnapshot.docs.map(doc => doc.data()));
+  
+          // Check if currentUserId is present in the memberSnapshot
+          const userIsMember = memberSnapshot.docs.some(doc => {
+            const memberData = doc.data();
+            console.log('Checking Member Data:', memberData);
+            return memberData.userId === currentUserId;
+          });
+  
+          if (userIsMember) {
+            fetchedGroups.push({ id: groupId, ...groupDoc.data() });
+          }
+        }
+  
+        console.log('Fetched Groups:', fetchedGroups);
+        setGroups(fetchedGroups);
+      });
+  
+      return () => unsubscribe();
+    }
   }, []);
+  
+  
+  
+  
+  
+
+
+// Empty dependency array ensures this runs once when the component mounts
+
 
   const handleSelectUser = (user) => {
     setSelectedUser(user);
@@ -104,25 +153,43 @@ const Dashboard = () => {
     }
   };
 
-  // create a new group
   const createGroup = async (e) => {
     e.preventDefault();
     if (!groupName.trim()) return;
-
+  
     try {
-      await addDoc(collection(db, "groups"), {
+      // Step 1: Create the group
+      const groupRef = await addDoc(collection(db, "groups"), {
         name: groupName,
         createdBy: auth.currentUser.uid,
-        createdAt: new Date()
+        createdAt: new Date(),
       });
-
-      setGroupName(""); // Clear input field after creating group
+  
+      // Step 2: Add the current user as a member of the newly created group
+      await setDoc(doc(db, "groups", groupRef.id, "members", auth.currentUser.uid), {
+        userId: auth.currentUser.uid,
+        addedAt: new Date(),
+        displayName: auth.currentUser.displayName, // Add the current user's display name
+      });
+  
+      // Step 3: Clear the input field after creating the group
+      setGroupName("");
+  
+      // Optionally, you can update the groups list manually to reflect the new group:
+      const newGroup = {
+        id: groupRef.id,
+        name: groupName,
+        createdBy: auth.currentUser.uid,
+        createdAt: new Date(),
+      };
+  
+      setGroups((prevGroups) => [...prevGroups, newGroup]);
     } catch (error) {
-      console.error("Error creating group:", error);
+      console.error("Error creating group or adding member:", error);
     }
   };
-
-  // add a new member to the group
+  
+        // add a new member to the group
   const addGroupMember = async (user) => {
     if (!selectedGroup) return;
 
@@ -147,7 +214,7 @@ const Dashboard = () => {
           <h3>Groups</h3>
           <ul className="userlist">
             {groups.map(group => (
-              <li classname="userlist-item" key={group.id} onClick={() => handleSelectGroup(group)}>
+              <li className="userlist-item" key={group.id} onClick={() => handleSelectGroup(group)}>
                 {group.name}
               </li>
             ))}
