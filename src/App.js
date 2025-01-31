@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Signup from "./components/signUpForm";
 import Signin from "./components/signInForm";
 import Chat from "./components/ChatPage";
@@ -8,6 +10,7 @@ import UserList from "./components/UserList";
 function App() {
   return (
     <Router>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
