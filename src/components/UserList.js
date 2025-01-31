@@ -33,8 +33,8 @@ const UsersList = ({ onSelectUser }) => {
   };
 
   return (
-    <div>
-      <h1>Users</h1>
+    <div style={{ backgroundColor: "#0d615d33", padding: "10px" , borderRadius: "20px" }}>
+      <h3 style={{ backgroundColor: ""}}>Users</h3>
       <ul className="userlist">
         {users.map((user) => (
           <li
