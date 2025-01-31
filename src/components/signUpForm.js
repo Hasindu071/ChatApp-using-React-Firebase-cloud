@@ -76,7 +76,7 @@ const Signup = () => {
         <p>
           Already have an account?{" "}
           <span
-            style={{ color: "blue", cursor: "pointer" }}
+            style={{ color: "#95bb72", cursor: "pointer" }}
             onClick={() => navigate("/signin")} // Navigate to login page
           >
             Login here

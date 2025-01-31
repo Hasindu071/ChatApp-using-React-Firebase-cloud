@@ -51,8 +51,8 @@ const Signin = () => {
         <p>
           Don't have an account?{" "}
           <span
-            style={{ color: "blue", cursor: "pointer" }}
-            //onClick={toggleForm} // Call the `toggleForm` function on click
+            style={{ color: "#95bb72", cursor: "pointer" }}
+            onClick={() => navigate("/")}
           >
             Sign up here
           </span>
