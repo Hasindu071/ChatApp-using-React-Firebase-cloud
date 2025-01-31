@@ -17,7 +17,7 @@ html, body {
 
 /* Left Panel */
 .left-panel {
-  width: 30%;
+  width: 50%;
   color: white;
   backdrop-filter: blur(12px);
   padding: 15px;
@@ -30,7 +30,7 @@ html, body {
 
 /* Right Panel */
 .right-panel {
-  width: 90%;
+  width: 100%;
   padding: 25px;
   background: rgb(210, 237, 233,0.4);
   border-radius: 0 12px 12px 0;
