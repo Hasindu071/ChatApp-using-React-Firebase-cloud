@@ -1,12 +1,15 @@
-/* Dashboard Container */
+html, body {
+  min-width: 700px; /* Adjust this value based on your design needs */
+  overflow-x: auto; /* Ensures horizontal scrolling instead of breaking the layout */
+}
+
 .dashboard {
   display: flex;
   height: 85vh;
-  width: 90vw;
-  max-width: 1200px;
+  min-width: 700px; /* Adjust this value based on your layout needs */
   margin: auto;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
+  border: 1px solid white;
+  background: rgba(6, 54, 56, 0.6);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -15,7 +18,7 @@
 /* Left Panel */
 .left-panel {
   width: 30%;
-  background: rgba(255, 255, 255, 0.3);
+  color: white;
   backdrop-filter: blur(12px);
   padding: 15px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -29,14 +32,14 @@
 .right-panel {
   width: 90%;
   padding: 25px;
-  background: #ffffff51;
+  background: rgb(210, 237, 233);
   border-radius: 0 12px 12px 0;
   display: flex;
   flex-direction: column;
 }
 
 /* Button Styling */
-button {
+db-button {
   display: block;
   width: 100%;
   padding: 12px;
@@ -62,10 +65,10 @@ button {
 .userlist-item {
   padding: 10px 15px;
   margin: 5px 0;
-  background-color: transparent;  /* No button-like background */
+  background-color: transparent;  
   display: flex;
   align-items: center;
-  cursor: pointer;               /* Pointer cursor to indicate it's clickable */
+  cursor: pointer;    
   transition: background-color 0.2s ease; /* Smooth background transition */
   font-size: 16px;                /* Adjust the font size */
   border-bottom: 1px solid #e0e0e0;  /* Border line like WhatsApp */
@@ -73,17 +76,14 @@ button {
 
 /* Hover effect when user hovers over a list item */
 .userlist-item:hover {
-  background-color: #f1f1f1;    /* Subtle hover effect */
+  background-color: #0b6158;    /* Subtle hover effect */
 }
 
 /* Style for the selected user item */
 .userlist-item.selected {
-  background-color: #144940;   /* Light blue background when selected */
+  background-color: #0b6158;   /* Light blue background when selected */
   color: #eceded;               /* Darker color for selected user */
 }
-
-
-
 
 
 button:hover {
@@ -91,7 +91,9 @@ button:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(6, 54, 56, 0.2);
 }
-
+.select{
+  color: rgba(6, 54, 56, 0.6);
+}
 /* Chat Box */
 .chat {
   width: 100%;
@@ -106,47 +108,17 @@ button:hover {
   font-size: xx-small;
 }
 
-/* Titles */
+
 h1 {
-  color: #1c4226;
+  color: #ffffff;
   margin-bottom: 15px;
   margin-left: 10px;
 }
 
-/* Titles */
 h3 {
   font-size: 1 rem;
-  color: #c7e8cf;
+  color: #fcfcfc;
   margin-bottom: 15px;
   margin-left: 10px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .dashboard {
-      flex-direction: column;
-      height: auto;
-      width: 95vw;
-  }
-
-  .left-panel {
-      width: 100%;
-      height: auto;
-      padding: 10px;
-      box-shadow: none;
-      border-bottom: 2px solid rgba(6, 54, 56, 0.1);
-  }
-
-  .right-panel {
-      width: 100%;
-      border-radius: 0;
-      padding: 15px;
-  }
-}
-.group-members-list {
-  font-size: 12px; /* Decrease font size */
-}
-
-.group-members h4 {
-  font-size: 14px; /* Decrease font size */
-}

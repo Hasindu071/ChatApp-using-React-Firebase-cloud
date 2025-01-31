@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UsersList from "./UserList";
+import UsersDropdown from "./UserListDropDown";
 import { db, auth } from "./firebase"; // Correct import path
 import { collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, where } from "firebase/firestore";
 import "../styles/dashboard.css";
@@ -128,7 +129,8 @@ const Dashboard = () => {
     try {
       await setDoc(doc(db, "groups", selectedGroup.id, "members", user.uid), {
         userId: user.uid,
-        addedAt: new Date()
+        addedAt: new Date(),
+        displayName: user.displayName
       });
 
       // Clear input field after adding member
@@ -141,11 +143,11 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="left-panel">
         <UsersList onSelectUser={handleSelectUser} />
-        <div className="groups-list">
+        <div>
           <h3>Groups</h3>
-          <ul>
+          <ul className="userlist">
             {groups.map(group => (
-              <li key={group.id} onClick={() => handleSelectGroup(group)}>
+              <li classname="userlist-item" key={group.id} onClick={() => handleSelectGroup(group)}>
                 {group.name}
               </li>
             ))}
@@ -157,7 +159,7 @@ const Dashboard = () => {
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
             />
-            <button type="submit">Create</button>
+            <button type="submit" class="db-button">Create</button>
           </form>
         </div>
       </div>
@@ -197,19 +199,21 @@ const Dashboard = () => {
               <button onClick={sendMessage}>Send</button>
             </div>
             {selectedGroup && (
-              <div className="group-members">
-                <h4>Add Members</h4>
-                <UsersList onSelectUser={addGroupMember} />
-                <ul className="group-members-list">
-                  {groupMembers.map(member => (
-                    <li key={member.id}>{member.userId}</li>
+              <div>
+                <UsersDropdown onSelectUser={addGroupMember} groupMembers={groupMembers} />
+                <ul>
+                {groupMembers.map((member, index) => (
+                  <span style={{ color: "black", marginLeft: "15px", fontSize : "13px", marginTop:"2px"}}key={member.id}>
+                    {member.displayName}
+                    {index < groupMembers.length - 1 && ","}
+                  </span>
                   ))}
                 </ul>
               </div>
             )}
           </div>
         ) : (
-          <h2>Select a user or group to start chatting</h2>
+          <p className="select">Select a user or group to start chatting</p>
         )}
       </div>
     </div>

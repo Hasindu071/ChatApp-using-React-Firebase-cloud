@@ -5,7 +5,7 @@
   height: 100vh;
   max-width: 500px;
   margin: auto;
-  background: rgba(255, 255, 255, 0.2);
+  background: #ffffff33;
   backdrop-filter: blur(12px);
   border-radius: 12px;
   overflow: hidden;
@@ -23,7 +23,7 @@
 .chat-body {
   flex: 1;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(245, 242, 242, 0.3);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@
 
 /* Messages sent by the logged-in user (aligned to right) */
 .message.sent {
-  background-color: rgba(103, 154, 137, 0.9);
+  background-color: rgba(169, 211, 197, 0.9);
   color: black;
   align-self: flex-end;
   text-align: right;
@@ -57,7 +57,7 @@
 
 /* Messages received from others (aligned to left) */
 .message.received {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   color: black;
   align-self: flex-start;
   text-align: left;
