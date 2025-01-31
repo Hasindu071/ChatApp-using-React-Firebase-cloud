@@ -32,7 +32,7 @@ html, body {
 .right-panel {
   width: 90%;
   padding: 25px;
-  background: rgb(210, 237, 233);
+  background: rgb(210, 237, 233,0.4);
   border-radius: 0 12px 12px 0;
   display: flex;
   flex-direction: column;
