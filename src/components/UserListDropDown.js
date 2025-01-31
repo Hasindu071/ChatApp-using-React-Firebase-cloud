@@ -79,20 +79,6 @@ const UsersDropdown = ({ onSelectUser, groupMembers }) => {
         ))}
       </select>
       
-      <h5
-        style={{
-          color: "#fff",
-          marginTop: "15px",
-          fontSize: "16px",
-          fontWeight: "bold",
-          padding: "8px",
-          background: "rgba(0,0,0,0.2)",
-          borderRadius: "5px",
-        }}
-      >
-        Group Members
-      </h5>
-      
     </div>
   );
 };
