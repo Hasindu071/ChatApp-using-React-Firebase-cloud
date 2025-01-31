@@ -32,29 +32,15 @@ const UsersDropdown = ({ onSelectUser, groupMembers }) => {
         padding: "20px",
         borderRadius: "10px",
         boxShadow: "5px 5px 15px rgba(0,0,0,0.15)",
-        maxWidth: "320px",
+        maxWidth: "3200px",
         textAlign: "center",
         transition: "transform 0.3s ease-in-out",
       }}
     >
-      <h5
-        style={{
-          color: "#fff",
-          fontSize: "18px",
-          fontWeight: "bold",
-          letterSpacing: "1px",
-          padding: "10px",
-          background: "rgba(0,0,0,0.2)",
-          borderRadius: "5px",
-        }}
-      >
-        Group Info
-      </h5>
-
       <label
         htmlFor="users"
         style={{
-          color: "#fff",
+          color: "black",
           fontSize: "14px",
           display: "block",
           marginBottom: "8px",
@@ -92,7 +78,7 @@ const UsersDropdown = ({ onSelectUser, groupMembers }) => {
           </option>
         ))}
       </select>
-
+      
       <h5
         style={{
           color: "#fff",
@@ -106,18 +92,7 @@ const UsersDropdown = ({ onSelectUser, groupMembers }) => {
       >
         Group Members
       </h5>
-      <button style={{ 
-    padding: '10px 20px',
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '16px',
-    transition: 'background-color 0.3s'
-}}>
-  Exit
-</button>
+      
     </div>
   );
 };
