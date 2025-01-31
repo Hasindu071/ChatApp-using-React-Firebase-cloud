@@ -5,6 +5,7 @@ import { db, auth } from "./firebase"; // Correct import path
 import { collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, where, getDocs } from "firebase/firestore";
 import { toast } from 'react-toastify';
 import "../styles/dashboard.css";
+import LogoutButton from "./Logout";
 
 const Dashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // selected user
@@ -201,7 +202,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="left-panel">
         <UsersList onSelectUser={handleSelectUser} />
-        <div>
+        <div style={{ backgroundColor: "#0d615d33", padding: "10px", borderRadius: "20px"}}>
           <h3>Groups</h3>
           <ul className="userlist">
             {groups.map(group => (
@@ -210,16 +211,19 @@ const Dashboard = () => {
               </li>
             ))}
           </ul>
-          <form onSubmit={createGroup}>
+          </div>
+          <form onSubmit={createGroup} 
+            style={{ backgroundColor: "#0d615d33", padding: "10px" , borderRadius: "20px" }}>
             <input
               type="text"
               placeholder="Create new group"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
+              style={{  padding: "5px", marginTop: "10px" }}
             />
-            <button type="submit" className="db-button">Create</button>
+            <button type="submit">Create</button>
           </form>
-        </div>
+          <LogoutButton style={{ display: "inline-block", marginTop: "10px", padding: "5px", backgroundColor: "#ff4d4d", color: "#fff", borderRadius: "5px", cursor: "pointer" }} />
       </div>
       <div className="right-panel">
         {selectedUser || selectedGroup ? (
