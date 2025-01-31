@@ -220,18 +220,14 @@ const Dashboard = () => {
               <button onClick={sendMessage}>Send</button>
             </div>
             {selectedGroup && (
-              <div>
-                <UsersDropdown onSelectUser={addGroupMember} groupMembers={groupMembers} />
-                <ul>
-                  {groupMembers.map((member, index) => (
-                    <span style={{ color: "black", marginLeft: "15px", fontSize: "13px", marginTop: "2px" }} key={member.id}>
-                      {member.displayName}
-                      {index < groupMembers.length - 1 && ","}
-                    </span>
-                  ))}
-                </ul>
-              </div>
-            )}
+                <div>
+                  <UsersDropdown
+                    onSelectUser={addGroupMember}
+                    groupMembers={groupMembers}
+                    selectedGroup={selectedGroup}
+                  />
+                </div>
+              )}
           </div>
         ) : (
           <p className="select">Select a user or group to start chatting</p>
