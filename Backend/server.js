@@ -49,6 +49,11 @@ app.get("/firebase-health", async (req, res) => {
     res.json(status);
 });
 
+app.get("/health", (req, res) => {
+    res.json({ status: "✅ Server is running" });
+});
+
+
 // 🚨 Notify users if Firebase is down
 async function notifyUsers() {
     const db = admin.firestore();
