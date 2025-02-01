@@ -17,7 +17,7 @@ const Signin = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success ("user ligged in successfullly! ");
+      toast.success ("user logged in successfullly! ");
       navigate("/dashboard");
     } catch (error) {
       alert("Invalid login credentials");

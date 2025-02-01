@@ -6,11 +6,13 @@ import Signin from "./components/signInForm";
 import Chat from "./components/ChatPage";
 import Dashboard from "./components/dashboard";
 import UserList from "./components/UserList";
+import FirebaseStatus from "./components/FireBaseStatus";
 
 function App() {
   return (
     <Router>
       <ToastContainer />
+      <FirebaseStatus /> {/* Show Firebase status banner */}
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
