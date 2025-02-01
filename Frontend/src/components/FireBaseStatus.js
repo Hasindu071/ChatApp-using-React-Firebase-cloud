@@ -37,27 +37,42 @@ const FirebaseStatus = () => {
     <div style={{ textAlign: "center", padding: "10px" }}>
       <div
         style={{
-          padding: "10px",
-          backgroundColor: serverStatus.includes("✅") ? "green" : "red",
+          padding: "8px 15px",
+          backgroundColor: serverStatus.includes("✅") ? "#4CAF50" : "#F44336",
           color: "white",
-          fontWeight: "bold",
-          marginBottom: "10px",
+          borderRadius: "20px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+          display: "inline-block",
+          marginBottom: "8px",
+          fontSize: "12px",
+          letterSpacing: "1px",
+          textTransform: "uppercase",
+          transition: "transform 0.3s ease-in-out",
         }}
       >
         {serverStatus}
       </div>
       <div
         style={{
-          padding: "10px",
-          backgroundColor: status.includes("✅") ? "green" : "red",
+          padding: "8px 15px",
+          backgroundColor: status.includes("✅") ? "#4CAF50" : "#F44336",
+          marginLeft: "20px",
           color: "white",
-          fontWeight: "bold",
+          borderRadius: "20px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+          display: "inline-block",
+          fontSize: "12px",
+          letterSpacing: "1px",
+          textTransform: "uppercase",
+          transition: "transform 0.3s ease-in-out",
         }}
       >
         {status}
       </div>
     </div>
   );
+  
+  
 };
 
 export default FirebaseStatus;

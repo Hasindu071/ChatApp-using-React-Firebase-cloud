@@ -6,6 +6,7 @@ import { collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, where, get
 import { toast } from 'react-toastify';
 import "../styles/dashboard.css";
 import LogoutButton from "./Logout";
+import myImage from "./back.png";  
 
 const Dashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // selected user
@@ -201,6 +202,23 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="left-panel">
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+  <img
+    src={myImage}
+    alt="Chat application background"
+    style={{
+      width: "50px",
+      height: "auto",
+      borderRadius: "10px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      marginRight: "10px" 
+    }}
+  />
+  <span style={{ fontSize: "24px", fontWeight: "bold", color: "#72f786" }}>
+    Chatfiy
+  </span>
+</div>
+
         <UsersList onSelectUser={handleSelectUser} />
         <div style={{ backgroundColor: "#0d615d33", padding: "10px", borderRadius: "20px"}}>
           <h3>Groups</h3>
@@ -275,7 +293,22 @@ const Dashboard = () => {
             )}
           </div>
         ) : (
-          <p className="select">Select a user or group to start chatting</p>
+<div>
+  <p
+    className="select"
+    style={{
+      fontSize: "16px",       
+      color: "#fff",          
+      fontWeight: "bold",        
+      textAlign: "center",    
+      marginBottom: "10px",       
+      letterSpacing: "1px"
+    }}
+  >
+    Select a user or group to start chatting
+  </p>
+</div>
+
         )}
       </div>
     </div>
