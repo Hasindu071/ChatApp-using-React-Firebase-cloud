@@ -21,7 +21,7 @@ const FirebaseStatus = () => {
     const checkFirebase = async () => {
       try {
         const response = await axios.get("http://localhost:5000/firebase-health");
-        setStatus(response.data.status);
+        setStatus(response.data.status); // Get Firebase status response
       } catch (error) {
         setStatus("❌ Unable to check Firebase! (Server issue)");
       }
@@ -55,7 +55,10 @@ const FirebaseStatus = () => {
       <div
         style={{
           padding: "8px 15px",
-          backgroundColor: status.includes("✅") ? "#4CAF50" : "#F44336",
+          backgroundColor:
+            status.includes("✅") || status.includes("Firebase is connected")
+              ? "#4CAF50"
+              : "#F44336",
           marginLeft: "20px",
           color: "white",
           borderRadius: "20px",
@@ -71,8 +74,7 @@ const FirebaseStatus = () => {
       </div>
     </div>
   );
-  
-  
 };
+
 
 export default FirebaseStatus;

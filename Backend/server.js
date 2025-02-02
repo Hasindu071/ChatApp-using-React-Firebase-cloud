@@ -86,6 +86,6 @@ setInterval(async () => {
     console.log("🔥 Firebase seems to be down! Notifying users...");
     notifyUsers();
   }
-}, 60000); // Check every 1 min
+}, 30000); // Check every 1/2 min
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
