@@ -1,8 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import { db, auth } from "./firebase";
-import { collection, addDoc, onSnapshot, serverTimestamp, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  serverTimestamp,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "../styles/chatPage.css"; // Ensure you create this CSS file for styling
+import api from "../services/api";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
@@ -24,6 +32,19 @@ const Chat = () => {
 
     return () => unsubscribe();
   }, [navigate]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const messageData = await api.getMessages();
+        setMessages(messageData);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchMessages();
+  });
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -47,20 +68,32 @@ const Chat = () => {
       <h2>Chat Room</h2>
       <div className="chat-box">
         {messages.map((msg) => (
-          <div key={msg.id} className={msg.user === auth.currentUser.email ? "message sent" : "message received"}>
-            <p><strong>{msg.user}: </strong>{msg.text}</p>
+          <div
+            key={msg.id}
+            className={
+              msg.user === auth.currentUser.email
+                ? "message sent"
+                : "message received"
+            }
+          >
+            <p>
+              <strong>{msg.user}: </strong>
+              {msg.text}
+            </p>
           </div>
         ))}
         <div ref={messagesEndRef}></div>
       </div>
       <form onSubmit={sendMessage} className="chat-form">
-        <input 
-          value={message} 
-          onChange={(e) => setMessage(e.target.value)} 
-          placeholder="Type a message..." 
+        <input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type a message..."
           className="chat-input"
         />
-        <button type="submit" className="send-btn">Send</button>
+        <button type="submit" className="send-btn">
+          Send
+        </button>
       </form>
     </div>
   );

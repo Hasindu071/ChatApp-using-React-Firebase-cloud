@@ -2,11 +2,22 @@ import React, { useState, useEffect } from "react";
 import UsersList from "./UserList";
 import UsersDropdown from "./UserListDropDown";
 import { db, auth } from "./firebase"; // Correct import path
-import { collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, where, getDocs } from "firebase/firestore";
-import { toast } from 'react-toastify';
+import {
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  setDoc,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { toast } from "react-toastify";
 import "../styles/dashboard.css";
 import LogoutButton from "./Logout";
-import myImage from "./back.png";  
+import myImage from "./back.png";
+import api from "../services/api";
 
 const Dashboard = () => {
   const [selectedUser, setSelectedUser] = useState(null); // selected user
@@ -42,7 +53,7 @@ const Dashboard = () => {
             const memberSnapshot = await getDocs(membersRef);
 
             // Check if currentUserId is present in the memberSnapshot
-            const userIsMember = memberSnapshot.docs.some(doc => {
+            const userIsMember = memberSnapshot.docs.some((doc) => {
               const memberData = doc.data();
               return memberData.userId === currentUserId;
             });
@@ -88,27 +99,32 @@ const Dashboard = () => {
     );
 
     onSnapshot(q, (snapshot) => {
-      const fetchedMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const fetchedMessages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setMessages(fetchedMessages);
     });
   };
 
   // fetching group messages
-  const fetchGroupMessages = (groupId) => {
-    const messagesRef = collection(db, "groups", groupId, "messages");
-    const q = query(messagesRef, orderBy("timestamp"));
-
-    onSnapshot(q, (snapshot) => {
-      const fetchedMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setMessages(fetchedMessages);
-    });
+  const fetchGroupMessages = async (groupId) => {
+    try {
+      const messages = await api.getMessages(groupId);
+      setMessages(messages);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   // fetching group members
   const fetchGroupMembers = (groupId) => {
     const membersRef = collection(db, "groups", groupId, "members");
     onSnapshot(membersRef, (snapshot) => {
-      const fetchedMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const fetchedMembers = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setGroupMembers(fetchedMembers);
     });
   };
@@ -124,14 +140,14 @@ const Dashboard = () => {
           senderId: auth.currentUser.uid, // Replace with actual logged-in user ID
           senderName: auth.currentUser.displayName, // Assuming displayName is available
           receiverId: selectedUser.uid,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       } else if (selectedGroup) {
         await addDoc(collection(db, "groups", selectedGroup.id, "messages"), {
           text: newMessage,
           senderId: auth.currentUser.uid, // Replace with actual logged-in user ID
           senderName: auth.currentUser.displayName, // Assuming displayName is available
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       }
 
@@ -156,11 +172,14 @@ const Dashboard = () => {
       });
 
       // Step 2: Add the current user as a member of the newly created group
-      await setDoc(doc(db, "groups", groupRef.id, "members", auth.currentUser.uid), {
-        userId: auth.currentUser.uid,
-        addedAt: new Date(),
-        displayName: auth.currentUser.displayName, // Add the current user's display name
-      });
+      await setDoc(
+        doc(db, "groups", groupRef.id, "members", auth.currentUser.uid),
+        {
+          userId: auth.currentUser.uid,
+          addedAt: new Date(),
+          displayName: auth.currentUser.displayName, // Add the current user's display name
+        }
+      );
 
       // Step 3: Clear the input field after creating the group
       setGroupName("");
@@ -189,7 +208,7 @@ const Dashboard = () => {
       await setDoc(doc(db, "groups", selectedGroup.id, "members", user.uid), {
         userId: user.uid,
         addedAt: new Date(),
-        displayName: user.displayName
+        displayName: user.displayName,
       });
 
       toast.success(`${user.displayName} added to the group!`); // Show success notification
@@ -202,52 +221,83 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="left-panel">
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-  <img
-    src={myImage}
-    alt="Chat application background"
-    style={{
-      width: "50px",
-      height: "auto",
-      borderRadius: "10px",
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-      marginRight: "10px" 
-    }}
-  />
-  <span style={{ fontSize: "24px", fontWeight: "bold", color: "#72f786" }}>
-    Chatfiy
-  </span>
-</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img
+            src={myImage}
+            alt="Chat application background"
+            style={{
+              width: "50px",
+              height: "auto",
+              borderRadius: "10px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              marginRight: "10px",
+            }}
+          />
+          <span
+            style={{ fontSize: "24px", fontWeight: "bold", color: "#72f786" }}
+          >
+            Chatfiy
+          </span>
+        </div>
 
         <UsersList onSelectUser={handleSelectUser} />
-        <div style={{ backgroundColor: "#0d615d33", padding: "10px", borderRadius: "20px"}}>
+        <div
+          style={{
+            backgroundColor: "#0d615d33",
+            padding: "10px",
+            borderRadius: "20px",
+          }}
+        >
           <h3>Groups</h3>
           <ul className="userlist">
-            {groups.map(group => (
-              <li className="userlist-item" key={group.id} onClick={() => handleSelectGroup(group)}>
+            {groups.map((group) => (
+              <li
+                className="userlist-item"
+                key={group.id}
+                onClick={() => handleSelectGroup(group)}
+              >
                 {group.name}
               </li>
             ))}
           </ul>
-          </div>
-          <form onSubmit={createGroup} 
-            style={{ backgroundColor: "#0d615d33", padding: "10px" , borderRadius: "20px" }}>
-            <input
-              type="text"
-              placeholder="Create new group"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              style={{  padding: "5px", marginTop: "10px" }}
-            />
-            <button type="submit">Create</button>
-          </form>
-          <LogoutButton style={{ display: "inline-block", marginTop: "10px", padding: "5px", backgroundColor: "#ff4d4d", color: "#fff", borderRadius: "5px", cursor: "pointer" }} />
+        </div>
+        <form
+          onSubmit={createGroup}
+          style={{
+            backgroundColor: "#0d615d33",
+            padding: "10px",
+            borderRadius: "20px",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Create new group"
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+            style={{ padding: "5px", marginTop: "10px" }}
+          />
+          <button type="submit">Create</button>
+        </form>
+        <LogoutButton
+          style={{
+            display: "inline-block",
+            marginTop: "10px",
+            padding: "5px",
+            backgroundColor: "#ff4d4d",
+            color: "#fff",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        />
       </div>
       <div className="right-panel">
         {selectedUser || selectedGroup ? (
           <div className="chat-container">
             <div className="chat-header">
-              <h3>Chat with {selectedUser ? selectedUser.displayName : selectedGroup.name}</h3>
+              <h3>
+                Chat with{" "}
+                {selectedUser ? selectedUser.displayName : selectedGroup.name}
+              </h3>
             </div>
             <div className="chat-body">
               {messages.map((message) => {
@@ -260,10 +310,16 @@ const Dashboard = () => {
 
                 return (
                   <div key={message.id} className={messageClass}>
-                    <p style={{ fontSize: "11px", color: "rgba(6, 54, 56)" }}><strong>{message.senderName}</strong></p>
+                    <p style={{ fontSize: "11px", color: "rgba(6, 54, 56)" }}>
+                      <strong>{message.senderName}</strong>
+                    </p>
                     <p>{message.text}</p>
                     <p className="time-style">
-                      <span>{new Date(message.timestamp.seconds * 1000).toLocaleString()}</span>
+                      <span>
+                        {new Date(
+                          message.timestamp.seconds * 1000
+                        ).toLocaleString()}
+                      </span>
                     </p>
                   </div>
                 );
@@ -280,10 +336,21 @@ const Dashboard = () => {
             </div>
             {selectedGroup && (
               <div>
-                <UsersDropdown onSelectUser={addGroupMember} groupMembers={groupMembers} />
+                <UsersDropdown
+                  onSelectUser={addGroupMember}
+                  groupMembers={groupMembers}
+                />
                 <ul>
                   {groupMembers.map((member, index) => (
-                    <span style={{ color: "black", marginLeft: "15px", fontSize: "13px", marginTop: "2px" }} key={member.id}>
+                    <span
+                      style={{
+                        color: "black",
+                        marginLeft: "15px",
+                        fontSize: "13px",
+                        marginTop: "2px",
+                      }}
+                      key={member.id}
+                    >
                       {member.displayName}
                       {index < groupMembers.length - 1 && ","}
                     </span>
@@ -293,22 +360,21 @@ const Dashboard = () => {
             )}
           </div>
         ) : (
-<div>
-  <p
-    className="select"
-    style={{
-      fontSize: "16px",       
-      color: "#fff",          
-      fontWeight: "bold",        
-      textAlign: "center",    
-      marginBottom: "10px",       
-      letterSpacing: "1px"
-    }}
-  >
-    Select a user or group to start chatting
-  </p>
-</div>
-
+          <div>
+            <p
+              className="select"
+              style={{
+                fontSize: "16px",
+                color: "#fff",
+                fontWeight: "bold",
+                textAlign: "center",
+                marginBottom: "10px",
+                letterSpacing: "1px",
+              }}
+            >
+              Select a user or group to start chatting
+            </p>
+          </div>
         )}
       </div>
     </div>
