@@ -16,5 +16,5 @@ async function checkServerHealth() {
     }
 }
 
-// Check every 1 minute
-setInterval(checkServerHealth, 60000);
+// Check every 1/4 minute
+setInterval(checkServerHealth, 10000);
